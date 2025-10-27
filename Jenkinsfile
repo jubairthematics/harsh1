@@ -25,7 +25,18 @@ pipeline {
 
         stage('Security Scan') {
             steps {
-                echo "📌 TODO: Add Trivy or Snyk scanning here"
+                echo "Running Trivy Scan..."
+                sh """
+                    trivy image --exit-code 1 --severity HIGH,CRITICAL ${env.IMAGE_NAME}:${env.BUILD_NUMBER} > trivy-report.txt                
+                    """
+            }
+
+            post {
+                always {
+                    archiveArtifacts artifacects: 'trivy-report.txt', fingerprint: true
+            }
+            failure{
+                echo " Vulnerabiliites found, check the damn file"
             }
         }
 

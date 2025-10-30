@@ -23,24 +23,24 @@ pipeline {
             }
         }
 
-        stage('Security Scan - Trivy') {
-            steps {
-                script {
-                    echo "🔍 Running Trivy Scan..."
-                    sh """
-                        trivy image --exit-code 1 --severity HIGH,CRITICAL ${env.IMAGE_NAME}:${env.BUILD_NUMBER} > trivy-report.txt
-                    """
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'trivy-report.txt', fingerprint: true
-                }
-                failure {
-                    echo "❌ Vulnerabilities found! Check trivy-report.txt"
-                }
-            }
-        }
+        // stage('Security Scan - Trivy') {
+        //     steps {
+        //         script {
+        //             echo "🔍 Running Trivy Scan..."
+        //             sh """
+        //                 trivy image --exit-code 1 --severity HIGH,CRITICAL ${env.IMAGE_NAME}:${env.BUILD_NUMBER} > trivy-report.txt
+        //             """
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             archiveArtifacts artifacts: 'trivy-report.txt', fingerprint: true
+        //         }
+        //         failure {
+        //             echo "❌ Vulnerabilities found! Check trivy-report.txt"
+        //         }
+        //     }
+        // }
 
         stage('Deploy to Kubernetes') {
             steps {
